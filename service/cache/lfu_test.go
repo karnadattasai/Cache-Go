@@ -8,10 +8,9 @@ import (
 
 func Test_lfu_Read(t *testing.T) {
 
-	type initCacheArg struct { // helps to build the initCacheArg
-		key             int
-		value           int
-		callReadOrWrite bool // call Read with key if true else call Write with key and value
+	type initCacheArg struct { // Holds the arguments to call Write() for initializing cache
+		key   int
+		value int
 	}
 	tests := []struct {
 		name          string
@@ -29,19 +28,16 @@ func Test_lfu_Read(t *testing.T) {
 			name: "Cache Full and key not present",
 			initCacheArgs: []initCacheArg{
 				{
-					key:             7,
-					value:           7,
-					callReadOrWrite: false,
+					key:   7,
+					value: 7,
 				},
 				{
-					key:             0,
-					value:           0,
-					callReadOrWrite: false,
+					key:   0,
+					value: 0,
 				},
 				{
-					key:             1,
-					value:           1,
-					callReadOrWrite: false,
+					key:   1,
+					value: 1,
 				},
 			},
 			key:         2,
@@ -51,19 +47,16 @@ func Test_lfu_Read(t *testing.T) {
 			name: "Cache Full and key present",
 			initCacheArgs: []initCacheArg{
 				{
-					key:             7,
-					value:           7,
-					callReadOrWrite: false,
+					key:   7,
+					value: 7,
 				},
 				{
-					key:             0,
-					value:           0,
-					callReadOrWrite: false,
+					key:   0,
+					value: 0,
 				},
 				{
-					key:             1,
-					value:           1,
-					callReadOrWrite: false,
+					key:   1,
+					value: 1,
 				},
 			},
 			key:         0,
@@ -73,29 +66,24 @@ func Test_lfu_Read(t *testing.T) {
 			name: "Fill Cache, Removing the least recently used if two nodes have same freq",
 			initCacheArgs: []initCacheArg{
 				{
-					key:             7,
-					value:           7,
-					callReadOrWrite: false,
+					key:   7,
+					value: 7,
 				},
 				{
-					key:             0,
-					value:           0,
-					callReadOrWrite: false,
+					key:   0,
+					value: 0,
 				},
 				{
-					key:             1,
-					value:           1,
-					callReadOrWrite: false,
+					key:   1,
+					value: 1,
 				},
 				{
-					key:             7,
-					value:           7,
-					callReadOrWrite: false,
+					key:   7,
+					value: 7,
 				},
 				{
-					key:             2,
-					value:           2,
-					callReadOrWrite: false,
+					key:   2,
+					value: 2,
 				},
 			},
 			key:         0,
@@ -106,13 +94,9 @@ func Test_lfu_Read(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var c Cache
 			c = NewLFUCache()
-			// initialize cache
-			for _, ctxt := range tt.initCacheArgs {
-				if ctxt.callReadOrWrite {
-					c.Read(ctxt.key)
-				} else {
-					c.Write(ctxt.key, ctxt.value)
-				}
+			// Initialize cache
+			for _, arg := range tt.initCacheArgs {
+				c.Write(arg.key, arg.value)
 			}
 			assert.Equal(t, tt.returnValue, c.Read(tt.key), "should be same")
 		})
@@ -121,10 +105,9 @@ func Test_lfu_Read(t *testing.T) {
 
 func Test_lfu_Write(t *testing.T) {
 
-	type initCacheArg struct { // helps to build the initCacheArg
-		key             int
-		value           int
-		callReadOrWrite bool // call Read with key if true else call Write with key and value
+	type initCacheArg struct { // Holds the arguments to call Write() for initializing cache
+		key   int
+		value int
 	}
 	tests := []struct {
 		name          string
@@ -136,19 +119,16 @@ func Test_lfu_Write(t *testing.T) {
 			name: "Write Success",
 			initCacheArgs: []initCacheArg{
 				{
-					key:             7,
-					value:           7,
-					callReadOrWrite: false,
+					key:   7,
+					value: 7,
 				},
 				{
-					key:             0,
-					value:           0,
-					callReadOrWrite: false,
+					key:   0,
+					value: 0,
 				},
 				{
-					key:             1,
-					value:           1,
-					callReadOrWrite: false,
+					key:   1,
+					value: 1,
 				},
 			},
 			key: 2,
@@ -158,13 +138,9 @@ func Test_lfu_Write(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var c Cache
 			c = NewLFUCache()
-			// initialize cache
-			for _, ctxt := range tt.initCacheArgs {
-				if ctxt.callReadOrWrite {
-					c.Read(ctxt.key)
-				} else {
-					c.Write(ctxt.key, ctxt.value)
-				}
+			// Initialize cache
+			for _, arg := range tt.initCacheArgs {
+				c.Write(arg.key, arg.value)
 			}
 			c.Write(tt.key, tt.value)
 		})

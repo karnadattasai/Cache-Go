@@ -3,8 +3,6 @@ package cache
 
 import (
 	"container/heap"
-
-	"github.com/karnadattasai/Cache-Go/service/list"
 )
 
 //capacity is the maximum size of the Cache
@@ -16,25 +14,11 @@ type Cache interface {
 	Write(key int, value int) // writes the given value at given key
 }
 
-// NewLRUCache return new Cache with LRU as replacement policy
-func NewLRUCache() Cache {
-	c := cacheLRU{}
-	c.keyNodePointerMap = make(map[int]*list.Node)
-	return &c
-}
-
 // NewLFUCache return new Cache with LFU as replacement policy
 func NewLFUCache() Cache {
 	c := cacheLFU{}
 	c.pq = make(priorityQueue, 0)
 	heap.Init(&c.pq)
 	c.keyNodePointerMap = make(map[int]*pqNode)
-	return &c
-}
-
-// NewFIFOCache return new Cache with FIFO as replacement policy
-func NewFIFOCache() Cache {
-	c := cacheFIFO{}
-	c.keyNodePointerMap = make(map[int]*list.Node)
 	return &c
 }

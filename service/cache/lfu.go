@@ -12,11 +12,11 @@ type data struct {
 	timestamp time.Time
 }
 
-// node data structure for priority queue
+// pqNode holds the node data structure for priority queue
 type pqNode struct {
 	nodeData data
-	freq     int // frequency(no of times referenced) to maintain the priority
-	index    int // index in the Priority queue
+	freq     int // Frequency(no of times referenced) to maintain the priority
+	index    int // Index in the Priority queue
 }
 
 type priorityQueue []*pqNode
@@ -28,7 +28,7 @@ func (pq priorityQueue) Less(i, j int) bool {
 	if pq[i].freq < pq[j].freq {
 		return true
 	}
-	// if both nodes have same priority/frequency select the least recently used
+	// If both nodes have same priority/frequency select the least recently used
 	if pq[i].freq == pq[j].freq {
 		return pq[i].nodeData.timestamp.Before(pq[j].nodeData.timestamp)
 	}
@@ -69,27 +69,26 @@ type cacheLFU struct {
 }
 
 func (c *cacheLFU) Read(key int) int {
-	// if key is present, read the value and update its frequency/priority
+	// If key is present, read the value and update its frequency/priority
 	if node, ok := c.keyNodePointerMap[key]; ok {
-		c.pq.update(node, node.nodeData, node.freq+1)
 		return node.nodeData.value
 	}
 	return -1
 }
 
 func (c *cacheLFU) Write(key, value int) {
-	// if key is already present, update the value and also update the priority queue
+	// If key is already present, update the value and also update the priority queue
 	if node, ok := c.keyNodePointerMap[key]; ok {
 		node.nodeData.value = value
 		c.pq.update(node, node.nodeData, node.freq+1)
 		return
 	}
-	// if key not present, first check if the length of list is less than capacity of cache else remove the LFU node
+	// If key not present, first check if the length of list is less than capacity of cache else remove the LFU node
 	if len(c.pq) >= capacity {
 		node := heap.Pop(&c.pq).(*pqNode)
 		delete(c.keyNodePointerMap, node.nodeData.key)
 	}
-	// pushing the node on heap and inserting the key-Nodepointer in map
+	// Pushing the node on heap and inserting the key-Nodepointer in map
 	node := &pqNode{data{key, value, time.Now()}, 1, 0}
 	heap.Push(&c.pq, node)
 	c.keyNodePointerMap[key] = node
