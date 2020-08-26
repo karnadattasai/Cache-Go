@@ -1,7 +1,12 @@
 //Package cache Provides LRU, LFU, FIFU Cache
 package cache
 
-import "github.com/karnadattasai/Cache-Go/service/list"
+import (
+	"container/heap"
+
+	heapForLFU "github.com/karnadattasai/Cache-Go/service/heap"
+	"github.com/karnadattasai/Cache-Go/service/list"
+)
 
 //capacity is the maximum size of the Cache
 const capacity = 3
@@ -16,5 +21,21 @@ type Cache interface {
 func NewLRUCache() Cache {
 	c := cacheLRU{}
 	c.keyNodePointerMap = make(map[int]*list.Node)
+	return &c
+}
+
+// NewFIFOCache return new Cache with FIFO as replacement policy
+func NewFIFOCache() Cache {
+	c := cacheFIFO{}
+	c.keyNodePointerMap = make(map[int]*list.Node)
+	return &c
+}
+
+// NewLFUCache return new Cache with LFU as replacement policy
+func NewLFUCache() Cache {
+	c := cacheLFU{}
+	c.pq = make(heapForLFU.PriorityQueue, 0)
+	heap.Init(&c.pq)
+	c.keyNodePointerMap = make(map[int]*heapForLFU.PQNode)
 	return &c
 }

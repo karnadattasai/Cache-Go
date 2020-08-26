@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_lru_Read(t *testing.T) {
+func Test_lfu_Read(t *testing.T) {
 
 	type initCacheArg struct { // Holds the arguments to call Write() for initializing cache
 		key   int
@@ -63,7 +63,7 @@ func Test_lru_Read(t *testing.T) {
 			returnValue: 0,
 		},
 		{
-			name: "Cache Full, removing least recently used",
+			name: "Fill Cache, Removing the least recently used if two nodes have same freq",
 			initCacheArgs: []initCacheArg{
 				{
 					key:   7,
@@ -82,10 +82,6 @@ func Test_lru_Read(t *testing.T) {
 					value: 7,
 				},
 				{
-					key:   1,
-					value: 1,
-				},
-				{
 					key:   2,
 					value: 2,
 				},
@@ -97,7 +93,7 @@ func Test_lru_Read(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var c Cache
-			c = NewLRUCache()
+			c = NewLFUCache()
 			// Initialize cache
 			for _, arg := range tt.initCacheArgs {
 				c.Write(arg.key, arg.value)
@@ -107,7 +103,7 @@ func Test_lru_Read(t *testing.T) {
 	}
 }
 
-func Test_lru_Write(t *testing.T) {
+func Test_lfu_Write(t *testing.T) {
 
 	type initCacheArg struct { // Holds the arguments to call Write() for initializing cache
 		key   int
@@ -141,7 +137,7 @@ func Test_lru_Write(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var c Cache
-			c = NewLRUCache()
+			c = NewLFUCache()
 			// Initialize cache
 			for _, arg := range tt.initCacheArgs {
 				c.Write(arg.key, arg.value)
