@@ -6,15 +6,7 @@ import (
 
 // cacheLRU hold data structures that implements LRU
 type cacheLRU struct {
-	cacheList         list.List // In the order from lru to most recently used
-	keyNodePointerMap map[int]*list.Node
-}
-
-func (c *cacheLRU) Read(key int) int {
-	if node, ok := c.keyNodePointerMap[key]; ok { // Check if key is present
-		return node.P.Value
-	}
-	return -1
+	cacheAbstraction
 }
 
 func (c *cacheLRU) Write(key int, value int) {
