@@ -18,3 +18,10 @@ func NewLRUCache() Cache {
 	c.keyNodePointerMap = make(map[int]*list.Node)
 	return &c
 }
+
+// NewFIFOCache return new Cache with FIFO as replacement policy
+func NewFIFOCache() Cache {
+	c := cacheFIFO{}
+	c.keyNodePointerMap = make(map[int]*list.Node)
+	return &c
+}

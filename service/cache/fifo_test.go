@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_lru_Read(t *testing.T) {
+func Test_fifo_Read(t *testing.T) {
 
 	type initCacheArg struct { // Holds the arguments to call Write() for initializing cache
 		key   int
@@ -63,7 +63,7 @@ func Test_lru_Read(t *testing.T) {
 			returnValue: 0,
 		},
 		{
-			name: "Cache Full, removing least recently used",
+			name: "Fill cache and remove the first entered node",
 			initCacheArgs: []initCacheArg{
 				{
 					key:   7,
@@ -90,14 +90,14 @@ func Test_lru_Read(t *testing.T) {
 					value: 2,
 				},
 			},
-			key:         0,
+			key:         7,
 			returnValue: -1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var c Cache
-			c = NewLRUCache()
+			c = NewFIFOCache()
 			// Initialize cache
 			for _, arg := range tt.initCacheArgs {
 				c.Write(arg.key, arg.value)
@@ -107,7 +107,7 @@ func Test_lru_Read(t *testing.T) {
 	}
 }
 
-func Test_lru_Write(t *testing.T) {
+func Test_FIFO_Write(t *testing.T) {
 
 	type initCacheArg struct { // Holds the arguments to call Write() for initializing cache
 		key   int
@@ -141,7 +141,7 @@ func Test_lru_Write(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var c Cache
-			c = NewLRUCache()
+			c = NewFIFOCache()
 			// Initialize cache
 			for _, arg := range tt.initCacheArgs {
 				c.Write(arg.key, arg.value)
