@@ -6,16 +6,10 @@ import (
 
 // cacheFIFO hold data structures that implements FIFO
 type cacheFIFO struct {
-	cacheList         list.List
-	keyNodePointerMap map[int]*list.Node
+	cacheAbstraction
 }
 
-func (c *cacheFIFO) Read(key int) int {
-	if node, ok := c.keyNodePointerMap[key]; ok {
-		return node.P.Value
-	}
-	return -1
-}
+
 
 func (c *cacheFIFO) Write(key int, value int) {
 	// If given key is already present update the value

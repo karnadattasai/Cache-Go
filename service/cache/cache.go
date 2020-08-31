@@ -17,16 +17,29 @@ type Cache interface {
 	Write(key int, value int) // writes the given value at given key
 }
 
+// cacheAbstraction abstracts lru and fifo cache
+type cacheAbstraction struct {
+	cacheList         list.List
+	keyNodePointerMap map[int]*list.Node
+}
+
+func (c *cacheAbstraction) Read(key int) int {
+	if node, ok := c.keyNodePointerMap[key]; ok {
+		return node.P.Value
+	}
+	return -1
+}
+
 // NewLRUCache return new Cache with LRU as replacement policy
 func NewLRUCache() Cache {
-	c := cacheLRU{}
+	c := cacheLRU{cacheAbstraction{}}
 	c.keyNodePointerMap = make(map[int]*list.Node)
 	return &c
 }
 
 // NewFIFOCache return new Cache with FIFO as replacement policy
 func NewFIFOCache() Cache {
-	c := cacheFIFO{}
+	c := cacheFIFO{cacheAbstraction{}}
 	c.keyNodePointerMap = make(map[int]*list.Node)
 	return &c
 }
