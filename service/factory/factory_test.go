@@ -30,6 +30,12 @@ func Test_GetCache(t *testing.T) {
 			err:       nil,
 		},
 		{
+			name:      "[Success] lfu cache",
+			cacheType: "lfu",
+			want:      cache.NewLFUCache(),
+			err:       nil,
+		},
+		{
 			name:      "[Failure] Invalid Cache type",
 			cacheType: "Random",
 			want:      nil,
